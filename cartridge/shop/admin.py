@@ -123,6 +123,7 @@ class ProductImageAdmin(TabularDynamicInlineAdmin):
 
 product_fieldsets = deepcopy(DisplayableAdmin.fieldsets)
 product_fieldsets[0][1]["fields"].insert(2, "available")
+product_fieldsets[0][1]["fields"].insert(2, "type")
 product_fieldsets[0][1]["fields"].extend(["content", "categories"])
 product_fieldsets = list(product_fieldsets)
 
@@ -161,7 +162,7 @@ class ProductAdmin(DisplayableAdmin):
     list_display = product_list_display
     list_display_links = ("admin_thumb", "title")
     list_editable = product_list_editable
-    list_filter = ("status", "available", "categories")
+    list_filter = ("status", "available", "categories", "type")
     filter_horizontal = ("categories",) + tuple(other_product_fields)
     search_fields = ("title", "content", "categories__title",
                      "variations__sku")

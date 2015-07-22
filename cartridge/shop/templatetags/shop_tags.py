@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
 from future.builtins import str
@@ -10,6 +11,7 @@ from django import template
 
 from cartridge.shop.utils import set_locale
 
+from cartridge.shop.models import Product
 
 register = template.Library()
 
@@ -77,3 +79,32 @@ def order_totals_text(context):
     Text version of order_totals.
     """
     return _order_totals(context)
+
+
+@register.inclusion_tag('includes/product_slide_box.html', takes_context=True)
+def latest_products(context, box_name, box_title, limit):
+    products = Product.objects.filter(available=True, type=0).order_by("-id")[:limit]
+
+    return {"Products":products, "box_title":box_title, "box_name":box_name, 'MEDIA_URL': context['MEDIA_URL']}
+
+
+@register.inclusion_tag('includes/product_slide_box.html', takes_context=True)
+def latest_special_products(context, box_name, box_title, limit):
+    
+    products = Product.objects.filter(available=True, type=2).order_by("-id")[:limit]
+
+    return {"Products":products, "box_title":box_title, "box_name":box_name, 'MEDIA_URL': context['MEDIA_URL']}
+
+@register.inclusion_tag('includes/today_offer.html', takes_context=True)
+def today_offer(context, box_name, box_title, limit):
+    
+    products = Product.objects.filter(available=True, type=1).order_by("-id")[:limit]
+
+    return {"Products":products, "box_title":box_title, "box_name":box_name, 'MEDIA_URL': context['MEDIA_URL']}
+
+@register.inclusion_tag('includes/best_seller.html', takes_context=True)
+def best_seller(context, box_name, box_title, limit):
+    
+    products = Product.objects.filter(available=True, type=1).order_by("-id")[:limit]
+
+    return {"Products":products, "box_title":box_title, "box_name":box_name, 'MEDIA_URL': context['MEDIA_URL']}

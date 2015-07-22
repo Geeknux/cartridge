@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from __future__ import division, unicode_literals
 from future.builtins import str, super
@@ -89,6 +90,13 @@ class Priced(models.Model):
 
 
 class Product(Displayable, Priced, RichText, AdminThumbMixin):
+    PRODUCT_TYPE = (
+        (0, "معمولی"),
+        (1, "پیشنهاد روز"),
+        (2, "پیشنهاد ویژه"),
+        (3, "پرفروش ترین ها")
+    )
+
     """
     Container model for a product that stores information common to
     all of its variations such as the product's title and description.
@@ -112,6 +120,8 @@ class Product(Displayable, Priced, RichText, AdminThumbMixin):
     admin_thumb_field = "image"
 
     search_fields = {"variations__sku": 100}
+
+    type = models.IntegerField(_("Product Type"), default=0, choices=PRODUCT_TYPE)
 
     class Meta:
         verbose_name = _("Product")
