@@ -7,7 +7,7 @@ from cartridge import __version__ as version
 
 
 exclude = ["cartridge/project_template/dev.db",
-           "cartridge/project_template/local_settings.py"]
+           "cartridge/project_template/project_name/local_settings.py"]
 if sys.argv == ["setup.py", "test"]:
     exclude = []
 exclude = dict([(e, None) for e in exclude])
@@ -53,7 +53,7 @@ try:
         tests_require=["pyflakes>=0.6.1", "pep8>=1.4.1"],
 
         install_requires=[
-            "mezzanine >= 3.1",
+            "mezzanine >= 4.0.1",
             "xhtml2pdf",
         ],
 
@@ -65,10 +65,10 @@ try:
             "License :: OSI Approved :: BSD License",
             "Operating System :: OS Independent",
             "Programming Language :: Python",
-            "Programming Language :: Python :: 2.6",
             "Programming Language :: Python :: 2.7",
             "Programming Language :: Python :: 3",
             "Programming Language :: Python :: 3.3",
+            "Programming Language :: Python :: 3.4",
             "Topic :: Internet :: WWW/HTTP",
             "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
             "Topic :: Internet :: WWW/HTTP :: WSGI",

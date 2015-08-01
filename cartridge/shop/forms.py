@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from future.builtins import filter, int, range, str, super, zip
 from future.utils import with_metaclass
 
+from collections import OrderedDict
 from copy import copy
 from datetime import date
 from itertools import dropwhile, takewhile
@@ -12,7 +13,6 @@ from re import match
 from django import forms
 from django.forms.models import BaseInlineFormSet, ModelFormMetaclass
 from django.forms.models import inlineformset_factory
-from django.utils.datastructures import SortedDict
 from django.utils.safestring import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
@@ -190,7 +190,7 @@ class FormsetForm(object):
             self._fields_done = []
         fieldset.non_field_errors = lambda *args: None
         names = [f for f in field_names if f not in self._fields_done]
-        fieldset.fields = SortedDict([(f, self.fields[f]) for f in names])
+        fieldset.fields = OrderedDict([(f, self.fields[f]) for f in names])
         self._fields_done.extend(names)
         return fieldset
 
@@ -240,12 +240,13 @@ class DiscountForm(forms.ModelForm):
         model = Order
         fields = ("discount_code",)
 
-    def __init__(self, request, data=None, initial=None):
+    def __init__(self, request, data=None, initial=None, **kwargs):
         """
         Store the request so that it can be used to retrieve the cart
         which is required to validate the discount code when entered.
         """
-        super(DiscountForm, self).__init__(data=data, initial=initial)
+        super(DiscountForm, self).__init__(
+                data=data, initial=initial, **kwargs)
         self._request = request
 
     def clean_discount_code(self):
@@ -319,7 +320,9 @@ class OrderForm(FormsetForm, DiscountForm):
                    f.name.startswith("shipping_detail")] +
                    ["additional_instructions", "discount_code"])
 
-    def __init__(self, request, step, data=None, initial=None, errors=None):
+    def __init__(
+            self, request, step, data=None, initial=None, errors=None,
+            **kwargs):
         """
         Setup for each order form step which does a few things:
 
@@ -344,7 +347,8 @@ class OrderForm(FormsetForm, DiscountForm):
         if initial is not None:
             initial["step"] = step
 
-        super(OrderForm, self).__init__(request, data=data, initial=initial)
+        super(OrderForm, self).__init__(
+                request, data=data, initial=initial, **kwargs)
         self._checkout_errors = errors
 
         # Hide discount code field if it shouldn't appear in checkout,
